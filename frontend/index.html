@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TACO YOLO API Demo</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <div>
+        <h1>TACO YOLOv8 • FastAPI Demo</h1>
+        <p class="muted">Görsel yükleyin → /predict → bbox + class + confidence</p>
+      </div>
+      <div class="pill" id="healthPill">API: kontrol ediliyor…</div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>1) Görsel yükle</h2>
+
+        <div class="controls">
+          <label class="file">
+            <input id="fileInput" type="file" accept="image/*" />
+            <span>Dosya Seç</span>
+          </label>
+
+          <div class="slider">
+            <label for="confRange">Confidence (conf): <b id="confLabel">0.25</b></label>
+            <input id="confRange" type="range" min="0.05" max="0.90" step="0.05" value="0.25" />
+            <div class="muted tiny">Düşük: daha çok tespit, Yüksek: daha temiz sonuç</div>
+          </div>
+
+          <button id="predictBtn" class="btn" disabled>Tahmin Et</button>
+        </div>
+
+        <div class="preview">
+          <div class="canvasWrap">
+            <img id="previewImg" alt="Önizleme" />
+            <canvas id="overlay"></canvas>
+          </div>
+          <div class="muted tiny">Not: Kutular görselin üstüne çizilir. JSON ayrıca sağda listelenir.</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2) Sonuçlar</h2>
+
+        <div class="row">
+          <div class="stat">
+            <div class="muted tiny">Tespit sayısı</div>
+            <div class="big" id="count">—</div>
+          </div>
+          <div class="stat">
+            <div class="muted tiny">İstek süresi</div>
+            <div class="big" id="latency">—</div>
+          </div>
+        </div>
+
+        <div id="list" class="list"></div>
+
+        <details class="jsonBox">
+          <summary>Ham JSON</summary>
+          <pre id="json"></pre>
+        </details>
+      </section>
+    </main>
+
+    <footer class="footer muted tiny">
+      Endpoint: <code>/predict?conf=…</code> • Swagger: <code>/docs</code>
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

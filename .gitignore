@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# venv
+.venv/
+venv/
+
+# Dataset & artifacts
+data/
+yolo_dataset/
+runs/
+
+# Weights / checkpoints
+*.pt
+*.pth
+*.bin
+*.onnx
+
+# Logs
+*.log
+kle_log.txt
+
+# OS/IDE
+.vscode/
+.idea/
+.DS_Store
