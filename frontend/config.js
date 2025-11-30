@@ -1,1 +1,1 @@
-window.API_BASE = "https://XXXX.onrender.com";
+const API_BASE = window.location.origin;
