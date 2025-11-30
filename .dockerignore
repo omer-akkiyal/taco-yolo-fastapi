@@ -1,0 +1,9 @@
+.venv
+__pycache__
+data
+yolo_dataset
+runs
+*.pt
+*.bin
+*.log
+kle_log.txt
