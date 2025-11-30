@@ -145,12 +145,6 @@ Kullanım:
   ]
 }
 ```
-
----
-
-## Mülakat için kısa özet (15 sn)
-“COCO/TACO anotasyonlarını YOLO formatına dönüştürdüm, YOLOv8 ile fine-tune yaptım, çıkan `best.pt`’yi FastAPI’da `/predict` endpoint’i ile servisledim. Üstüne basit bir web arayüzü yazıp endpoint’i gerçek zamanlı kullandırdım.”
-
 ---
 
 ## Lisans / Kaynak
