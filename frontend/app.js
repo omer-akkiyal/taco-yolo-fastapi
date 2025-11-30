@@ -19,14 +19,17 @@ let selectedFile = null;
 let lastDetections = [];
 
 
-const API_BASE =
-  (window.location.origin && window.location.origin !== "null")
-    ? window.location.origin
-    : "http://127.0.0.1:8000";
+const API_BASE = (window.API_BASE && typeof window.API_BASE === "string")
+  ? window.API_BASE.replace(/\/+$/, "")
+  : "http://127.0.0.1:8000";
 
 function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, m => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  return String(s).replace(/[&<>"']/g, (m) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
   }[m]));
 }
 
@@ -68,9 +71,10 @@ function renderList(detections) {
   }
 
   const rows = detections
+    .slice()
     .sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0))
     .slice(0, 50)
-    .map(d => {
+    .map((d) => {
       const name = escapeHtml(String(d.class_name ?? d.class_id));
       const conf = (d.confidence ?? 0).toFixed(2);
       return `<div class="item"><b>${name}</b> <span class="badge">${conf}</span></div>`;
@@ -81,6 +85,7 @@ function renderList(detections) {
 
 function drawBoxes(detections) {
   if (!previewImg.naturalWidth || !previewImg.naturalHeight) return;
+
   clearCanvas();
 
   const imgW = previewImg.naturalWidth;
@@ -96,6 +101,7 @@ function drawBoxes(detections) {
   const offsetX = (cw - drawW) / 2;
   const offsetY = (ch - drawH) / 2;
 
+  // image
   ctx.drawImage(previewImg, offsetX, offsetY, drawW, drawH);
 
   ctx.save();
@@ -108,6 +114,7 @@ function drawBoxes(detections) {
   for (const det of detections) {
     const c = det.confidence ?? 0;
     if (c < uiConf) continue;
+    if (!det.box_xyxy || det.box_xyxy.length !== 4) continue;
 
     const [x1, y1, x2, y2] = det.box_xyxy;
     const sx1 = offsetX + x1 * scale;
@@ -137,10 +144,11 @@ function drawBoxes(detections) {
 
 async function checkHealth() {
   try {
-    const res = await fetchWithTimeout(`${API_BASE}/health`, {}, 8000);
+    const res = await fetchWithTimeout(`${API_BASE}/health`, {}, 12000);
     if (!res.ok) throw new Error("health not ok");
+
     const data = await res.json();
-    healthPill.textContent = `API: hazır • ${data.model ?? ""}`;
+    healthPill.textContent = `API: hazır • ${data.model_path ?? data.model ?? ""}`;
     healthPill.style.borderColor = "rgba(110,231,255,.35)";
   } catch {
     healthPill.textContent = "API: erişilemiyor";
@@ -175,7 +183,7 @@ fileInput.addEventListener("change", () => {
     previewImg.style.display = "block";
     fitCanvasToImage();
     clearCanvas();
-    drawBoxes([]); 
+    drawBoxes([]);
   };
   previewImg.src = url;
 });
@@ -190,7 +198,7 @@ predictBtn.addEventListener("click", async () => {
   latencyEl.textContent = "—";
   lastDetections = [];
   clearCanvas();
-  drawBoxes([]); 
+  drawBoxes([]);
 
   const form = new FormData();
   form.append("file", selectedFile);
@@ -202,13 +210,11 @@ predictBtn.addEventListener("click", async () => {
     const res = await fetchWithTimeout(
       `${API_BASE}/predict?conf=${conf}`,
       { method: "POST", body: form },
-      60000
+      90000
     );
 
     const raw = await res.text();
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}: ${raw}`);
-    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${raw}`);
 
     const data = JSON.parse(raw);
     const t1 = performance.now();
@@ -224,8 +230,8 @@ predictBtn.addEventListener("click", async () => {
     drawBoxes(lastDetections);
   } catch (e) {
     const msg = (e && e.name === "AbortError")
-      ? "Timeout: Model çok uzun sürdü. conf'u düşürün veya daha küçük görsel deneyin."
-      : String(e.message ?? e);
+      ? "Timeout: Model uzun sürdü. conf’u yükseltin veya daha küçük görsel deneyin."
+      : String(e?.message ?? e);
 
     listEl.innerHTML = `<div class="item">❌ Hata: <b>${escapeHtml(msg)}</b></div>`;
   } finally {
@@ -239,6 +245,5 @@ window.addEventListener("resize", () => {
     drawBoxes(lastDetections);
   }
 });
-
 
 checkHealth();
