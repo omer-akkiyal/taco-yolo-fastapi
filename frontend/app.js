@@ -19,9 +19,7 @@ let selectedFile = null;
 let lastDetections = [];
 
 
-const API_BASE = (window.API_BASE && typeof window.API_BASE === "string")
-  ? window.API_BASE.replace(/\/+$/, "")
-  : "http://127.0.0.1:8000";
+const API_BASE = ""; 
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (m) => ({
