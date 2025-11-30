@@ -19,8 +19,6 @@ let selectedFile = null;
 let lastDetections = [];
 
 
-const API_BASE = ""; 
-
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (m) => ({
     "&": "&amp;",
@@ -99,7 +97,6 @@ function drawBoxes(detections) {
   const offsetX = (cw - drawW) / 2;
   const offsetY = (ch - drawH) / 2;
 
-  // image
   ctx.drawImage(previewImg, offsetX, offsetY, drawW, drawH);
 
   ctx.save();
@@ -142,7 +139,7 @@ function drawBoxes(detections) {
 
 async function checkHealth() {
   try {
-    const res = await fetchWithTimeout(`${API_BASE}/health`, {}, 12000);
+    const res = await fetchWithTimeout(`/health`, {}, 12000);
     if (!res.ok) throw new Error("health not ok");
 
     const data = await res.json();
@@ -206,7 +203,7 @@ predictBtn.addEventListener("click", async () => {
 
   try {
     const res = await fetchWithTimeout(
-      `${API_BASE}/predict?conf=${conf}`,
+      `/predict?conf=${conf}`,
       { method: "POST", body: form },
       90000
     );
