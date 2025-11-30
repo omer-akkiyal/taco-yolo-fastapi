@@ -2,8 +2,6 @@
 
 Bu repo, **TACO (Trash Annotations in Context)** veri seti ile YOLOv8 nesne tespiti eğitimi (fine-tune) yapıp, çıkan modeli **FastAPI** üzerinden `/predict` endpoint’i ile servis eder. Ayrıca aynı endpoint’i kullanan basit bir **Web UI** içerir.
 
-> Not: Dataset ve `runs/` gibi eğitim çıktıları repo’ya eklenmez. Model ağırlığı (weights) **GitHub Releases** üzerinden paylaşılır.
-
 ---
 
 ## Özellikler
@@ -52,7 +50,6 @@ py -m pip install -r requirements.txt
 ---
 
 ## Model Ağırlıkları (Weights)
-Bu repo ağırlıkları doğrudan commit etmez.
 
 1) GitHub repo sayfasında **Releases** bölümünden modeli indirin (`best.pt` önerilir)
 2) Repo kökünde `models/` klasörü oluşturup içine koyun:
